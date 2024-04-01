@@ -1,35 +1,42 @@
 require("dotenv").config();
-const express = require("express");
-const { Sequelize } = require("sequelize");
+import express, { Request, Response } from "express";
+// import { Sequelize } from "sequelize";
+import Product from "./src/models/product";
+import { sequelize } from "./database";
 console.log(process.env.DATABASE_URL);
-export const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: `postgres`,
-});
-
+// export const sequelize = new Sequelize(process.env.DATABASE_URL as string, {
+//   dialect: "postgres",
+// });
 
 const app = express();
-const mongoose = require("mongoose");
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
+
 app.use(express.json());
 
-const dataList: any[] = [];
-app.get("/data", (req: any, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: any[]): void; new(): any; }; }; }) => {
-  res.status(200).send(dataList);
+app.get("/data", async (req: Request, res: Response) => {
+  const allProduct = await Product.findAll();
+  res.status(200).send(allProduct);
 });
 
-app.post("/data", (req: { body: any; }, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: any): void; new(): any; }; }; }) => {
-  let data = req.body;
-  dataList.push(data);
-  res.status(201).send(data);
-  return;
-});
-
-app.listen(PORT, () => {
+app.post("/data", async (req: Request, res: Response) => {
   try {
-    sequelize.authenticate();
-    console.log("connect to db");
+    const data = req.body;
+    const productData = await Product.create(data);
+    res.status(201).send(productData);
   } catch (error) {
-    console.log("connection failed", error);
+    console.error("Error handling POST request:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.listen(PORT, async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("Connected to the database");
+    await sequelize.sync({ alter: true });
+    console.log("sync to the database");
+  } catch (error) {
+    console.error("Failed to connect to the database:", error);
   }
   console.log(`Server is running on port ${PORT}`);
 });
