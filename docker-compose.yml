@@ -4,8 +4,8 @@ services:
   db:
     image: "postgres:12"
     environment:
-      - POSTGRESS_DB=db
-      - POSTGRESS_USER=user
+      - POSTGRESS_DB=goldie_db
+      - POSTGRESS_USER=williams
       - POSTGRES_PASSWORD=password
     ports:
-      - '5432:5432'
+      - "5432:5432"

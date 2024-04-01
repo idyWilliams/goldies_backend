@@ -1,5 +1,5 @@
 FROM node:14-alpine
 WORKDIR /app
- COPY . .
- RUN npm install --production
- EXPOSE 5000
+COPY . .
+RUN npm install --production
+EXPOSE 5000
