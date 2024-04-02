@@ -1,15 +1,16 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../database";
+import Subcategory from "./subcategory";
 
 interface CategoryAttributes {
   id: number;
   name: string;
-  categoryId: number;
+  image: string;
+
   description: string;
 }
 
-interface CategoryCreationAttributes
-  extends Partial<CategoryAttributes> {}
+interface CategoryCreationAttributes extends Partial<CategoryAttributes> {}
 
 class Category
   extends Model<CategoryAttributes, CategoryCreationAttributes>
@@ -17,7 +18,8 @@ class Category
 {
   public id!: number;
   public name!: string;
-  public categoryId!: number;
+  public image!: string;
+
   public description!: string;
 }
 
@@ -32,8 +34,8 @@ Category.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    categoryId: {
-      type: DataTypes.INTEGER,
+    image: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     description: {
@@ -46,5 +48,8 @@ Category.init(
     modelName: "Category",
   }
 );
+
+Category.hasMany(Subcategory);
+Subcategory.belongsTo(Category, { foreignKey: "categoryId" });
 
 export default Category;

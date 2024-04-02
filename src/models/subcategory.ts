@@ -1,12 +1,13 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../database";
+import Category from "./category";
 
 interface SubcategoryAttributes {
   id: number;
   name: string;
   description: string;
+  image: string;
   categoryId: number;
-  subcategoryId: number;
 }
 
 interface SubcategoryCreationAttributes
@@ -19,8 +20,8 @@ class Subcategory
   public id!: number;
   public name!: string;
   public description!: string;
+  public image!: string;
   public categoryId!: number;
-  public subcategoryId!: number;
 }
 
 Subcategory.init(
@@ -38,11 +39,12 @@ Subcategory.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    categoryId: {
-      type: DataTypes.INTEGER,
+    image: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    subcategoryId: {
+
+    categoryId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -52,5 +54,8 @@ Subcategory.init(
     modelName: "Subcategory",
   }
 );
+
+Category.hasMany(Subcategory, { foreignKey: "categoryId" });
+Subcategory.belongsTo(Category, { foreignKey: "categoryId" });
 
 export default Subcategory;
