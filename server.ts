@@ -1,12 +1,8 @@
 require("dotenv").config();
 import express, { Request, Response } from "express";
-// import { Sequelize } from "sequelize";
 import Product from "./src/models/product";
 import { sequelize } from "./database";
-console.log(process.env.DATABASE_URL);
-// export const sequelize = new Sequelize(process.env.DATABASE_URL as string, {
-//   dialect: "postgres",
-// });
+
 
 const app = express();
 const PORT = process.env.PORT;
@@ -15,7 +11,7 @@ app.use(express.json());
 
 app.get("/data", async (req: Request, res: Response) => {
   const allProduct = await Product.findAll();
-  res.status(200).send(allProduct);
+  res.status(200).send(allProduct); 
 });
 
 app.post("/data", async (req: Request, res: Response) => {

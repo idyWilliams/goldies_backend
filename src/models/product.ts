@@ -2,6 +2,8 @@ import { DataTypes, Model } from "sequelize";
 import Category from "./category";
 import Subcategory from "./subcategory";
 import { sequelize } from "../../database";
+
+// Define the interface for Product attributes
 interface IProduct {
   id: number;
   name: string;
@@ -10,15 +12,19 @@ interface IProduct {
   sizes: string[];
   fillings: string[];
   shapes: string[];
-  categoryId: number;
-  subcategoryId: number;
   toppings: string[];
   images: string[];
+  // Add references to Category and Subcategory objects
+  category: Category; // Reference to Category object
+  subcategory: Subcategory; // Reference to Subcategory object
 }
 
+// Define the interface for Product creation attributes
 interface IProductCreation extends Partial<IProduct> {}
 
+// Define the Product model
 class Product extends Model<IProductCreation, IProduct> implements IProduct {
+  // Define the attributes
   public id!: number;
   public name!: string;
   public price!: number;
@@ -26,12 +32,13 @@ class Product extends Model<IProductCreation, IProduct> implements IProduct {
   public sizes!: string[];
   public fillings!: string[];
   public shapes!: string[];
-  public categoryId!: number;
-  public subcategoryId!: number;
   public toppings!: string[];
   public images!: string[];
+  public category!: Category; // Reference to Category object
+  public subcategory!: Subcategory; // Reference to Subcategory object
 }
 
+// Initialize the Product model
 Product.init(
   {
     id: {
@@ -63,14 +70,6 @@ Product.init(
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
-    categoryId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    subcategoryId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     toppings: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
@@ -86,7 +85,11 @@ Product.init(
   }
 );
 
-Product.belongsTo(Category, { foreignKey: "categoryId" });
-Product.belongsTo(Subcategory, { foreignKey: "subcategoryId" });
+// Define associations between Product, Category, and Subcategory
+Product.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
+Product.belongsTo(Subcategory, {
+  foreignKey: "subcategoryId",
+  as: "subcategory",
+});
 
 export default Product;
